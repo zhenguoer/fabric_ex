@@ -1,0 +1,255 @@
+version: '2.1'
+
+volumes:
+  orderer.example.com:
+  peer0.org1.example.com:
+  peer1.org1.example.com:
+  peer2.org1.example.com:
+  peer3.org1.example.com:
+  peer4.org1.example.com:
+  peer5.org1.example.com:
+  peer6.org1.example.com:
+  peer7.org1.example.com:
+  peer8.org1.example.com:
+  peer0.org2.example.com:
+
+networks:
+  fabric_network:
+    name: fabric_network
+
+services:
+  # 排序服务节点
+  orderer.example.com:
+    container_name: orderer.example.com
+    image: hyperledger/fabric-orderer:1.4.12
+    environment:
+      - GODEBUG=netdns=go
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/config/genesis.block # 注入创世区块
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/orderer/msp # 证书相关
+    command: orderer
+    ports:
+      - "7050:7050"
+    volumes: # 挂载由cryptogen和configtxgen生成的证书文件以及创世区块
+      - ./config/genesis.block:/etc/hyperledger/config/genesis.block
+      - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/etc/hyperledger/orderer
+      - orderer.example.com:/var/hyperledger/production/orderer
+    networks:
+      - fabric_network
+
+  #  Taobao 组织 peer0 节点
+  peer0.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer0.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    ports:
+      - "7051:7051" # grpc服务端口
+      - "7053:7053" # eventhub端口
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com:/etc/hyperledger/peer
+      - peer0.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  #  Taobao 组织 peer1 节点
+  peer1.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer1.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer1.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+    ports:
+      - "17051:7051"
+      - "17053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com:/etc/hyperledger/peer
+      - peer1.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer2.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer2.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer2.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer2.org1.example.com:7051
+    ports:
+      - "27051:7051"
+      - "27053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer2.org1.example.com:/etc/hyperledger/peer
+      - peer2.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer3.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer3.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer3.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer3.org1.example.com:7051
+    ports:
+      - "37051:7051"
+      - "37053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer3.org1.example.com:/etc/hyperledger/peer
+      - peer3.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer4.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer4.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer4.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer4.org1.example.com:7051
+    ports:
+      - "47051:7051"
+      - "47053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer4.org1.example.com:/etc/hyperledger/peer
+      - peer4.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer5.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer5.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer5.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer5.org1.example.com:7051
+    ports:
+      - "57051:7051"
+      - "57053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer5.org1.example.com:/etc/hyperledger/peer
+      - peer5.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer6.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer6.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer6.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer6.org1.example.com:7051
+    ports:
+      - "54051:7051"
+      - "54053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer6.org1.example.com:/etc/hyperledger/peer
+      - peer6.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer7.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer7.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer7.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer7.org1.example.com:7051
+    ports:
+      - "65051:7051"
+      - "65053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer7.org1.example.com:/etc/hyperledger/peer
+      - peer7.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  peer8.org1.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer8.org1.example.com
+    environment:
+      - CORE_PEER_ID=peer8.org1.example.com
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_ADDRESS=peer8.org1.example.com:7051
+    ports:
+      - "63051:7051"
+      - "63053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer8.org1.example.com:/etc/hyperledger/peer
+      - peer8.org1.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+
+  #  JD 组织 peer0 节点
+  peer0.org2.example.com:
+    extends:
+      file: docker-compose-base.yaml
+      service: peer-base
+    container_name: peer0.org2.example.com
+    environment:
+      - CORE_PEER_ID=peer0.org2.example.com
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+    ports:
+      - "64051:7051"
+      - "64053:7053"
+    volumes:
+      - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com:/etc/hyperledger/peer
+      - peer0.org2.example.com:/var/hyperledger/production
+    depends_on:
+      - orderer.example.com
+
+  # 客户端节点
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.12
+    tty: true
+    environment:
+      # go 环境设置
+      - GO111MODULE=auto
+      - GOPROXY=https://goproxy.cn
+      - CORE_PEER_ID=cli
+    command: /bin/bash
+    volumes:
+      - ./config:/etc/hyperledger/config
+      - ./crypto-config/peerOrganizations/org1.example.com/:/etc/hyperledger/peer/org1.example.com
+      - ./crypto-config/peerOrganizations/org2.example.com/:/etc/hyperledger/peer/org2.example.com
+      - ./../chaincode:/opt/gopath/src/chaincode # 链码路径注入
+    networks:
+      - fabric_network
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer2.org1.example.com
+      - peer3.org1.example.com
+      - peer4.org1.example.com
+      - peer5.org1.example.com
+      - peer6.org1.example.com
+      - peer7.org1.example.com
+      - peer8.org1.example.com
+      - peer0.org2.example.com
